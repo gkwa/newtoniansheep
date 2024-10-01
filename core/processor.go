@@ -1,14 +1,8 @@
 package core
 
 import (
-	"regexp"
 	"strings"
 )
-
-type ImageLink struct {
-	Name string
-	URL  string
-}
 
 type ProcessorImpl struct {
 	normalizer *LineNormalizer
@@ -27,8 +21,8 @@ func (p *ProcessorImpl) Process(input []string) ([]string, error) {
 	for _, line := range input {
 		trimmedLine := strings.TrimSpace(line)
 
-		if strings.HasPrefix(trimmedLine, "[") || strings.HasPrefix(trimmedLine, "![") {
-			imageLink, err := parseImageLink(trimmedLine)
+		if ImageLinkRegex.MatchString(trimmedLine) {
+			imageLink, err := ParseImageLink(trimmedLine)
 			if err != nil {
 				return nil, err
 			}
@@ -43,16 +37,4 @@ func (p *ProcessorImpl) Process(input []string) ([]string, error) {
 	}
 
 	return p.normalizer.Normalize(result), nil
-}
-
-func parseImageLink(line string) (ImageLink, error) {
-	re := regexp.MustCompile(`\[([^\]]*)\]\(([^)]+)\)`)
-	matches := re.FindStringSubmatch(line)
-	if len(matches) == 3 {
-		return ImageLink{
-			Name: matches[1],
-			URL:  matches[2],
-		}, nil
-	}
-	return ImageLink{}, nil
 }

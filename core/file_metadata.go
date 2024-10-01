@@ -1,0 +1,62 @@
+package core
+
+import (
+	"os"
+	"regexp"
+
+	"github.com/dustin/go-humanize"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
+)
+
+type FileMetadata struct {
+	Path      string
+	Size      uint64
+	LineCount int
+	LinkCount int
+}
+
+func GetFileMetadata(path string) (FileMetadata, error) {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return FileMetadata{}, err
+	}
+
+	lines := SplitLines(string(content))
+	linkCount := CountLinks(lines)
+
+	return FileMetadata{
+		Path:      path,
+		Size:      uint64(len(content)),
+		LineCount: len(lines),
+		LinkCount: linkCount,
+	}, nil
+}
+
+func SplitLines(s string) []string {
+	return regexp.MustCompile(`\r?\n`).Split(s, -1)
+}
+
+func CountLinks(lines []string) int {
+	linkRegex := regexp.MustCompile(`\[([^\]]*)\]\(([^)]+)\)`)
+	count := 0
+	for _, line := range lines {
+		count += len(linkRegex.FindAllString(line, -1))
+	}
+	return count
+}
+
+func (fm FileMetadata) String() string {
+	p := message.NewPrinter(language.English)
+	size := humanize.Bytes(fm.Size)
+	if fm.Size >= 1024*1024 && fm.Size%(1024*1024) == 0 {
+		size = p.Sprintf("%d MB", fm.Size/(1024*1024))
+	}
+	return p.Sprintf(
+		"%s is %s with %d lines and %d links",
+		fm.Path,
+		size,
+		fm.LineCount,
+		fm.LinkCount,
+	)
+}

@@ -5,19 +5,20 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gkwa/newtoniansheep/core"
 	"github.com/spf13/cobra"
+
+	"github.com/gkwa/newtoniansheep/core"
 )
 
-var deduplicateCmd = &cobra.Command{
-	Use:   "deduplicate [file]",
-	Short: "Deduplicate image links in a file",
+var randomizeCmd = &cobra.Command{
+	Use:   "randomize [file]",
+	Short: "Randomize image links in a file",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		logger := LoggerFrom(cmd.Context())
 		fileHandler := core.NewFileHandler()
-		processor := core.NewProcessor()
-		deduplicator := core.NewDeduplicator(logger, fileHandler, processor)
+		processor := core.NewRandomizer()
+		randomizer := core.NewLinkRandomizer(logger, fileHandler, processor)
 
 		inputPath := args[0]
 		absInputPath, err := filepath.Abs(inputPath)
@@ -26,13 +27,20 @@ var deduplicateCmd = &cobra.Command{
 			absInputPath = inputPath
 		}
 
-		err = deduplicator.ProcessFile(absInputPath)
+		outputPath := core.GetRandomizedFilePath(absInputPath)
+		absOutputPath, err := filepath.Abs(outputPath)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to get absolute output file path: %v\n", err)
+			absOutputPath = outputPath
+		}
+
+		err = randomizer.ProcessFile(absInputPath)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to process file: %v\n", err)
 			os.Exit(1)
 		}
 
-		metadata, err := core.GetFileMetadata(absInputPath)
+		metadata, err := core.GetFileMetadata(absOutputPath)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to get file metadata: %v\n", err)
 			os.Exit(1)
@@ -42,5 +50,5 @@ var deduplicateCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(deduplicateCmd)
+	rootCmd.AddCommand(randomizeCmd)
 }
