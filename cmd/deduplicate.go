@@ -26,17 +26,18 @@ var deduplicateCmd = &cobra.Command{
 			absInputPath = inputPath
 		}
 
-		err = deduplicator.ProcessFile(absInputPath)
+		duplicatesRemoved, err := deduplicator.ProcessFile(absInputPath)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to process file: %v\n", err)
 			os.Exit(1)
 		}
 
-		metadata, err := core.GetFileMetadata(absInputPath)
+		metadata, err := core.GetFileMetadata(absInputPath, duplicatesRemoved)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to get file metadata: %v\n", err)
 			os.Exit(1)
 		}
+
 		fmt.Println(metadata.String())
 	},
 }

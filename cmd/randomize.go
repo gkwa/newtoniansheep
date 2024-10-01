@@ -40,7 +40,7 @@ var randomizeCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		metadata, err := core.GetFileMetadata(absOutputPath)
+		metadata, err := core.GetFileMetadata(absOutputPath, 0) // Pass 0 for duplicatesRemoved as randomize doesn't remove duplicates
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to get file metadata: %v\n", err)
 			os.Exit(1)

@@ -9,7 +9,7 @@ import (
 )
 
 type Processor interface {
-	Process(input []string) ([]string, error)
+	Process(input []string) ([]string, int, error)
 }
 
 type FileHandler interface {
@@ -35,35 +35,35 @@ func NewDeduplicator(
 	}
 }
 
-func (d *Deduplicator) ProcessFile(path string) error {
+func (d *Deduplicator) ProcessFile(path string) (int, error) {
 	content, err := d.fileHandler.Read(path)
 	if err != nil {
 		d.logger.Error(err, "Failed to read file")
-		return err
+		return 0, err
 	}
 
 	originalChecksum := d.calculateChecksum(content)
 
-	processedContent, err := d.processor.Process(content)
+	processedContent, duplicatesRemoved, err := d.processor.Process(content)
 	if err != nil {
 		d.logger.Error(err, "Failed to process content")
-		return err
+		return 0, err
 	}
 
 	processedChecksum := d.calculateChecksum(processedContent)
 
 	if originalChecksum == processedChecksum {
 		d.logger.V(1).Info("No changes detected, skipping file write")
-		return nil
+		return duplicatesRemoved, nil
 	}
 
 	err = d.fileHandler.Write(path, processedContent)
 	if err != nil {
 		d.logger.Error(err, "Failed to write file")
-		return err
+		return 0, err
 	}
 
-	return nil
+	return duplicatesRemoved, nil
 }
 
 func (d *Deduplicator) calculateChecksum(content []string) string {

@@ -10,13 +10,14 @@ import (
 )
 
 type FileMetadata struct {
-	Path      string
-	Size      uint64
-	LineCount int
-	LinkCount int
+	Path              string
+	Size              uint64
+	LineCount         int
+	LinkCount         int
+	DuplicatesRemoved int
 }
 
-func GetFileMetadata(path string) (FileMetadata, error) {
+func GetFileMetadata(path string, duplicatesRemoved int) (FileMetadata, error) {
 	content, err := os.ReadFile(path)
 	if err != nil {
 		return FileMetadata{}, err
@@ -26,10 +27,11 @@ func GetFileMetadata(path string) (FileMetadata, error) {
 	linkCount := CountLinks(lines)
 
 	return FileMetadata{
-		Path:      path,
-		Size:      uint64(len(content)),
-		LineCount: len(lines),
-		LinkCount: linkCount,
+		Path:              path,
+		Size:              uint64(len(content)),
+		LineCount:         len(lines),
+		LinkCount:         linkCount,
+		DuplicatesRemoved: duplicatesRemoved,
 	}, nil
 }
 
@@ -53,10 +55,11 @@ func (fm FileMetadata) String() string {
 		size = p.Sprintf("%d MB", fm.Size/(1024*1024))
 	}
 	return p.Sprintf(
-		"%s is %s with %d lines and %d links",
+		"%s is %s with %d lines and %d links and %d duplicates removed",
 		fm.Path,
 		size,
 		fm.LineCount,
 		fm.LinkCount,
+		fm.DuplicatesRemoved,
 	)
 }

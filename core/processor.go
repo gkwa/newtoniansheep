@@ -14,9 +14,10 @@ func NewProcessor() *ProcessorImpl {
 	}
 }
 
-func (p *ProcessorImpl) Process(input []string) ([]string, error) {
+func (p *ProcessorImpl) Process(input []string) ([]string, int, error) {
 	var result []string
 	seenURLs := make(map[string]bool)
+	duplicatesRemoved := 0
 
 	for _, line := range input {
 		trimmedLine := strings.TrimSpace(line)
@@ -24,17 +25,19 @@ func (p *ProcessorImpl) Process(input []string) ([]string, error) {
 		if ImageLinkRegex.MatchString(trimmedLine) {
 			imageLink, err := ParseImageLink(trimmedLine)
 			if err != nil {
-				return nil, err
+				return nil, 0, err
 			}
 
 			if !seenURLs[imageLink.URL] {
 				seenURLs[imageLink.URL] = true
 				result = append(result, line)
+			} else {
+				duplicatesRemoved++
 			}
 		} else {
 			result = append(result, line)
 		}
 	}
 
-	return p.normalizer.Normalize(result), nil
+	return p.normalizer.Normalize(result), duplicatesRemoved, nil
 }
