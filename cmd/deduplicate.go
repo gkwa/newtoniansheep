@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/gkwa/newtoniansheep/core"
 	"github.com/spf13/cobra"
@@ -17,28 +16,15 @@ var deduplicateCmd = &cobra.Command{
 		logger := LoggerFrom(cmd.Context())
 		fileHandler := core.NewFileHandler()
 		processor := core.NewProcessor()
-		deduplicator := core.NewDeduplicator(logger, fileHandler, processor)
+		manager := core.NewDeduplicateManager(logger, fileHandler, processor)
 
-		inputPath := args[0]
-		absInputPath, err := filepath.Abs(inputPath)
+		result, err := manager.Deduplicate(args[0])
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to get absolute input file path: %v\n", err)
-			absInputPath = inputPath
-		}
-
-		duplicatesRemoved, err := deduplicator.ProcessFile(absInputPath)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to process file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
 
-		metadata, err := core.GetFileMetadata(absInputPath, duplicatesRemoved)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to get file metadata: %v\n", err)
-			os.Exit(1)
-		}
-
-		fmt.Println(metadata.String())
+		fmt.Println(result)
 	},
 }
 

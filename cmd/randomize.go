@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 
@@ -18,34 +17,15 @@ var randomizeCmd = &cobra.Command{
 		logger := LoggerFrom(cmd.Context())
 		fileHandler := core.NewFileHandler()
 		processor := core.NewRandomizer()
-		randomizer := core.NewLinkRandomizer(logger, fileHandler, processor)
+		manager := core.NewRandomizeManager(logger, fileHandler, processor)
 
-		inputPath := args[0]
-		absInputPath, err := filepath.Abs(inputPath)
+		result, err := manager.Randomize(args[0])
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to get absolute input file path: %v\n", err)
-			absInputPath = inputPath
-		}
-
-		outputPath := core.GetRandomizedFilePath(absInputPath)
-		absOutputPath, err := filepath.Abs(outputPath)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to get absolute output file path: %v\n", err)
-			absOutputPath = outputPath
-		}
-
-		err = randomizer.ProcessFile(absInputPath)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to process file: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
 
-		metadata, err := core.GetFileMetadata(absOutputPath, 0) // Pass 0 for duplicatesRemoved as randomize doesn't remove duplicates
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Failed to get file metadata: %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println(metadata.String())
+		fmt.Println(result)
 	},
 }
 
