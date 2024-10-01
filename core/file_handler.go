@@ -33,11 +33,7 @@ func (fh *FileHandlerImpl) Read(path string) ([]string, error) {
 	if !locked {
 		return nil, context.DeadlineExceeded
 	}
-	defer func() {
-		if err := fileLock.Unlock(); err != nil {
-			fmt.Printf("Error unlocking file: %v\n", err)
-		}
-	}()
+	defer fh.removeLockFile(fileLock)
 
 	content, err := os.ReadFile(path)
 	if err != nil {
@@ -58,11 +54,7 @@ func (fh *FileHandlerImpl) Write(path string, content []string) error {
 	if !locked {
 		return context.DeadlineExceeded
 	}
-	defer func() {
-		if err := fileLock.Unlock(); err != nil {
-			fmt.Printf("Error unlocking file: %v\n", err)
-		}
-	}()
+	defer fh.removeLockFile(fileLock)
 
 	file, err := os.Create(path)
 	if err != nil {
@@ -79,4 +71,13 @@ func (fh *FileHandlerImpl) Write(path string, content []string) error {
 	}
 
 	return writer.Flush()
+}
+
+func (fh *FileHandlerImpl) removeLockFile(fileLock *flock.Flock) {
+	if err := fileLock.Unlock(); err != nil {
+		fmt.Printf("Error unlocking file: %v\n", err)
+	}
+	if err := os.Remove(fileLock.Path()); err != nil && !os.IsNotExist(err) {
+		fmt.Printf("Error removing lock file: %v\n", err)
+	}
 }
