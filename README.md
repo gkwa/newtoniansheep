@@ -1,4 +1,3 @@
--- README.md --
 # newtoniansheep
 
 A command-line tool for managing image links in markdown files.
