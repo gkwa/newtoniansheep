@@ -13,7 +13,11 @@ type DeduplicateManager struct {
 	processor   Processor
 }
 
-func NewDeduplicateManager(logger logr.Logger, fileHandler FileHandler, processor Processor) *DeduplicateManager {
+func NewDeduplicateManager(
+	logger logr.Logger,
+	fileHandler FileHandler,
+	processor Processor,
+) *DeduplicateManager {
 	return &DeduplicateManager{
 		logger:      logger,
 		fileHandler: fileHandler,

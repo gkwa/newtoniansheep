@@ -44,9 +44,12 @@ func TestDeduplicator_ProcessFile(t *testing.T) {
 				t.Fatalf("Unexpected error status: %v", err)
 			}
 			if duplicatesRemoved != tt.expectedDuplicates {
-				t.Errorf("Expected %d duplicates removed, got %d", tt.expectedDuplicates, duplicatesRemoved)
+				t.Errorf(
+					"Expected %d duplicates removed, got %d",
+					tt.expectedDuplicates,
+					duplicatesRemoved,
+				)
 			}
 		})
 	}
 }
-

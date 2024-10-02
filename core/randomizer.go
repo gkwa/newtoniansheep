@@ -98,4 +98,3 @@ func (r *RandomizerImpl) Process(input []string) ([]string, error) {
 
 	return result, nil
 }
-

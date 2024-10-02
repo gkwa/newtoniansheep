@@ -83,7 +83,9 @@ func TestRandomizerImpl_Process(t *testing.T) {
 			}
 
 			if reflect.DeepEqual(tt.input, output) && tt.expectedImages > 1 {
-				t.Errorf("Expected output to be different from input, but they are the same after 5 attempts")
+				t.Errorf(
+					"Expected output to be different from input, but they are the same after 5 attempts",
+				)
 			}
 
 			if len(output) != len(tt.input) {
@@ -163,7 +165,7 @@ func TestLinkRandomizer_ProcessFile(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockHandler := &mockRandomizerFileHandler{content: tt.input}
 			lr := NewLinkRandomizer(logr.Discard(), mockHandler, NewRandomizer())
-			
+
 			err := lr.ProcessFile("test.txt")
 			if err != nil {
 				t.Fatalf("Unexpected error: %v", err)
@@ -191,7 +193,10 @@ func TestLinkRandomizer_ProcessFile(t *testing.T) {
 			}
 
 			if reflect.DeepEqual(tt.input, output) && tt.expectedImages > 1 {
-				t.Logf("Warning: Output is the same as input for test case '%s'. This may occasionally happen due to randomization.", tt.name)
+				t.Logf(
+					"Warning: Output is the same as input for test case '%s'. This may occasionally happen due to randomization.",
+					tt.name,
+				)
 			}
 		})
 	}

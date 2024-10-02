@@ -9,20 +9,20 @@ import (
 
 func TestNewConsoleLogger(t *testing.T) {
 	tests := []struct {
-		name           string
-		development    bool
-		enableStdout   bool
-		expectedMsg    string
-		expectedKey    string
-		expectedValue  string
+		name          string
+		development   bool
+		enableStdout  bool
+		expectedMsg   string
+		expectedKey   string
+		expectedValue string
 	}{
 		{
-			name:           "Development mode",
-			development:    true,
-			enableStdout:   true,
-			expectedMsg:    "test message",
-			expectedKey:    "key",
-			expectedValue:  "value",
+			name:          "Development mode",
+			development:   true,
+			enableStdout:  true,
+			expectedMsg:   "test message",
+			expectedKey:   "key",
+			expectedValue: "value",
 		},
 	}
 
@@ -55,9 +55,13 @@ func TestNewConsoleLogger(t *testing.T) {
 			}
 
 			if logMap[tt.expectedKey] != tt.expectedValue {
-				t.Errorf("Expected key '%s' to be '%s', got '%v'", tt.expectedKey, tt.expectedValue, logMap[tt.expectedKey])
+				t.Errorf(
+					"Expected key '%s' to be '%s', got '%v'",
+					tt.expectedKey,
+					tt.expectedValue,
+					logMap[tt.expectedKey],
+				)
 			}
 		})
 	}
 }
-

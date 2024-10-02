@@ -13,7 +13,11 @@ type RandomizeManager struct {
 	processor   Randomizer
 }
 
-func NewRandomizeManager(logger logr.Logger, fileHandler FileHandler, processor Randomizer) *RandomizeManager {
+func NewRandomizeManager(
+	logger logr.Logger,
+	fileHandler FileHandler,
+	processor Randomizer,
+) *RandomizeManager {
 	return &RandomizeManager{
 		logger:      logger,
 		fileHandler: fileHandler,

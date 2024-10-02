@@ -29,4 +29,3 @@ func TestLineNormalizer_Normalize(t *testing.T) {
 		})
 	}
 }
-

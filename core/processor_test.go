@@ -50,9 +50,12 @@ func TestProcessorImpl_Process(t *testing.T) {
 			}
 
 			if duplicatesRemoved != tt.expectedDuplicates {
-				t.Errorf("Expected %d duplicate removed, got %d", tt.expectedDuplicates, duplicatesRemoved)
+				t.Errorf(
+					"Expected %d duplicate removed, got %d",
+					tt.expectedDuplicates,
+					duplicatesRemoved,
+				)
 			}
 		})
 	}
 }
-

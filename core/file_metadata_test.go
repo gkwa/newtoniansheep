@@ -45,7 +45,12 @@ func TestGetFileMetadata(t *testing.T) {
 				t.Errorf("Expected path %s, got %s", testFile, metadata.Path)
 			}
 			if metadata.Size < tt.expectedMinSize || metadata.Size > tt.expectedMaxSize {
-				t.Errorf("Expected size between %d and %d, got %d", tt.expectedMinSize, tt.expectedMaxSize, metadata.Size)
+				t.Errorf(
+					"Expected size between %d and %d, got %d",
+					tt.expectedMinSize,
+					tt.expectedMaxSize,
+					metadata.Size,
+				)
 			}
 			if metadata.LineCount != tt.expectedLine {
 				t.Errorf("Expected %d lines, got %d", tt.expectedLine, metadata.LineCount)
