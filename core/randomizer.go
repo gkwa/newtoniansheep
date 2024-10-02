@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/go-logr/logr"
 )
@@ -68,7 +69,7 @@ type RandomizerImpl struct {
 
 func NewRandomizer() *RandomizerImpl {
 	return &RandomizerImpl{
-		rng: rand.New(rand.NewSource(rand.Int63())),
+		rng: rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 }
 
@@ -81,6 +82,8 @@ func (r *RandomizerImpl) Process(input []string) ([]string, error) {
 		if ImageLinkRegex.MatchString(line) {
 			imageLinks = append(imageLinks, line)
 			imageLinkIndices = append(imageLinkIndices, i)
+		} else {
+			result = append(result, line)
 		}
 	}
 
@@ -88,12 +91,11 @@ func (r *RandomizerImpl) Process(input []string) ([]string, error) {
 		imageLinks[i], imageLinks[j] = imageLinks[j], imageLinks[i]
 	})
 
-	result = make([]string, len(input))
-	copy(result, input)
-
-	for i, index := range imageLinkIndices {
-		result[index] = imageLinks[i]
+	for _, index := range imageLinkIndices {
+		result = append(result[:index], append([]string{imageLinks[0]}, result[index:]...)...)
+		imageLinks = imageLinks[1:]
 	}
 
 	return result, nil
 }
+
