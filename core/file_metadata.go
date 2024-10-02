@@ -66,6 +66,6 @@ func (fm FileMetadata) String() string {
 			fm.DuplicatesRemoved,
 		)
 	} else {
-		return baseString
+		return p.Sprintf("%s and 0 duplicates found", baseString)
 	}
 }
