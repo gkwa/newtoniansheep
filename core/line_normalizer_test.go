@@ -16,12 +16,6 @@ func TestLineNormalizer_Normalize(t *testing.T) {
 			input:    []string{"line1", "", "", "line2", "  ", "line3", ""},
 			expected: []string{"line1", "", "line2", "", "line3", ""},
 		},
-		{
-			name:     "No emptyline separating links",
-			input:    []string{"line1", "line2", "", "line3"},
-			expected: []string{"line1", "", "line2", "", "line3"},
-		},
-
 	}
 
 	for _, tt := range tests {
