@@ -51,9 +51,6 @@ func CountLinks(lines []string) int {
 func (fm FileMetadata) String() string {
 	p := message.NewPrinter(language.English)
 	size := humanize.Bytes(fm.Size)
-	if fm.Size >= 1024*1024 && fm.Size%(1024*1024) == 0 {
-		size = p.Sprintf("%d MB", fm.Size/(1024*1024))
-	}
 	return p.Sprintf(
 		"%s is %s with %d lines and %d links and %d duplicates removed",
 		fm.Path,
