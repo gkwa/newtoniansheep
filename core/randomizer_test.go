@@ -2,6 +2,7 @@ package core
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -200,4 +201,79 @@ func TestLinkRandomizer_ProcessFile(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestLinkRandomizerE2E(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+	}{
+		{
+			name: "Basic randomization",
+			input: `![name](https://name.com)
+
+![name1](https://name1.com)`,
+		},
+		{
+			name: "Basic randomization with extra whitespace",
+			input: `![name](https://name.com)
+
+
+					![name1](https://name1.com)`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockHandler := &mockRandomizerFileHandler{content: strings.Split(tt.input, "\n")}
+			lr := NewLinkRandomizer(logr.Discard(), mockHandler, NewRandomizer())
+
+			err := lr.ProcessFile("test.txt")
+			if err != nil {
+				t.Fatalf("Unexpected error: %v", err)
+			}
+
+			output := strings.Join(mockHandler.content, "\n")
+			inputLines := strings.Split(tt.input, "\n")
+			reversedInput := strings.Join(reverseSlice(inputLines), "\n")
+
+			if output != tt.input && output != reversedInput {
+				t.Errorf("Expected output to be either the same as input or reversed, but got:\n%s", output)
+			}
+
+			outputLines := strings.Split(output, "\n")
+
+			if len(outputLines) != len(inputLines) {
+				t.Errorf("Expected output to have %d lines, but got %d", len(inputLines), len(outputLines))
+			}
+
+			inputImages := make(map[string]bool)
+			for _, line := range inputLines {
+				if ImageLinkRegex.MatchString(line) {
+					inputImages[line] = true
+				}
+			}
+
+			for _, line := range outputLines {
+				if ImageLinkRegex.MatchString(line) {
+					if !inputImages[line] {
+						t.Errorf("Unexpected image link in output: %s", line)
+					}
+					delete(inputImages, line)
+				}
+			}
+
+			if len(inputImages) > 0 {
+				t.Errorf("Some input images were not present in the output: %v", inputImages)
+			}
+		})
+	}
+}
+
+func reverseSlice(s []string) []string {
+	reversed := make([]string, len(s))
+	for i, j := 0, len(s)-1; i < len(s); i, j = i+1, j-1 {
+		reversed[i] = s[j]
+	}
+	return reversed
 }
