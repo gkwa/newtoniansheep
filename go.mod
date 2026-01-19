@@ -1,6 +1,6 @@
 module github.com/gkwa/newtoniansheep
 
-go 1.24.0
+go 1.25.0
 
 toolchain go1.25.6
 
@@ -19,7 +19,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	go.uber.org/zap v1.27.1
 	golang.org/x/text v0.33.0
-	sigs.k8s.io/controller-runtime v0.22.4
+	sigs.k8s.io/controller-runtime v0.23.0
 )
 
 require (
