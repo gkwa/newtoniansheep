@@ -1,6 +1,6 @@
 module github.com/gkwa/newtoniansheep
 
-go 1.25.0
+go 1.25.6
 
 toolchain go1.26.0
 
@@ -12,7 +12,7 @@ require (
 	github.com/go-logr/zapr v1.3.0
 	github.com/go-logr/zerologr v1.2.3
 	github.com/gofrs/flock v0.13.0
-	github.com/google/go-containerregistry v0.20.7
+	github.com/google/go-containerregistry v0.21.0
 	github.com/magefile/mage v1.15.0
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/cobra v1.10.2
@@ -56,13 +56,13 @@ require (
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/crypto v0.47.0 // indirect
+	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
-	golang.org/x/mod v0.32.0 // indirect
-	golang.org/x/net v0.49.0 // indirect
+	golang.org/x/mod v0.33.0 // indirect
+	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/tools v0.41.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/tools v0.42.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
