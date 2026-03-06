@@ -2,7 +2,7 @@ module github.com/gkwa/newtoniansheep
 
 go 1.25.6
 
-toolchain go1.26.0
+toolchain go1.26.1
 
 require (
 	github.com/dustin/go-humanize v1.0.1
